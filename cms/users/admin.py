@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Pais, Departamentos, Ciudades, Domicilio, Categoria, Producto, Descuento, DetalleDescuento, CuponDescuento, FormadePago, EstadodeCompra, OrdendeCompra
+from .models import User, Pais, Departamentos, Ciudades, Domicilio, Categoria, SubCategoria, Producto, Descuento, DetalleDescuento, CuponDescuento, FormadePago, EstadodeCompra, OrdendeCompra
 
 admin.site.register(Pais)
 admin.site.register(Departamentos)
@@ -13,6 +13,7 @@ admin.site.register(CuponDescuento)
 admin.site.register(FormadePago)
 admin.site.register(EstadodeCompra)
 admin.site.register(OrdendeCompra)
+admin.site.register(SubCategoria)
 
 
 @admin.register(User)

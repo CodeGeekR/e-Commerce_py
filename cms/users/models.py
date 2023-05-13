@@ -1,5 +1,8 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+
 
 
 # Create your models here.
@@ -75,9 +78,20 @@ class Categoria(models.Model):
         return f'Categoria ({self.id}): {self.nombreCategoria} {self.id_status}'
 
 
+class SubCategoria(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    nombreSubCategoria = models.CharField(max_length=50)
+    id_status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'SubCategoria ({self.id_categoria}): {self.nombreSubCategoria} {self.id_status}'
+
+
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.CASCADE, default=1) #validators=[MinValueValidator(1)],
     nombreProducto = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=200)
     precio = models.IntegerField(default=0)
@@ -90,6 +104,11 @@ class Producto(models.Model):
 
     def formatted_date_created(self):
         return self.date_created.strftime('%Y-%B-%d %H:%M:%S')
+
+    def clean(self):
+        super().clean()
+        if self.id_subcategoria.id_categoria != self.id_categoria:
+            raise ValidationError('La subcategoría no pertenece a la categoría seleccionada')
 
 
 class Descuento(models.Model):
