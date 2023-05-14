@@ -4,7 +4,6 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 
 
-
 # Create your models here.
 class User(models.Model):
     id = models.AutoField(primary_key=True)
@@ -40,7 +39,7 @@ class Departamentos(models.Model):
     id_status = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'Departamentos ({self.id_pais}): {self.nombreDepartamento} {self.indicativo} {self.id_status}'
+        return f'Departamentos ({self.id}): {self.nombreDepartamento} {self.indicativo} {self.id_status}'
 
 
 class Ciudades(models.Model):
@@ -50,7 +49,7 @@ class Ciudades(models.Model):
     id_status = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'Ciudades ({self.id_departamento}): {self.nombreCiudad} {self.id_status}'
+        return f'Ciudades ({self.id}): {self.nombreCiudad} {self.id_status}'
 
 
 class Domicilio(models.Model):
@@ -85,13 +84,13 @@ class SubCategoria(models.Model):
     id_status = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'SubCategoria ({self.id_categoria}): {self.nombreSubCategoria} {self.id_status}'
+        return f'SubCategoria ({self.id}): {self.nombreSubCategoria} {self.id_status}'
 
 
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-    id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.CASCADE, default=1) #validators=[MinValueValidator(1)],
+    id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.SET_NULL, blank=True, null=True) #validators=[MinValueValidator(1)],
     nombreProducto = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=200)
     precio = models.IntegerField(default=0)
@@ -100,14 +99,14 @@ class Producto(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'Producto ({self.id_categoria}): {self.nombreProducto} {self.precio} {self.cantidad} {self.id_status}'
+        return f'Producto ({self.id}): {self.nombreProducto} {self.precio} {self.cantidad} {self.id_status}'
 
     def formatted_date_created(self):
         return self.date_created.strftime('%Y-%B-%d %H:%M:%S')
 
     def clean(self):
         super().clean()
-        if self.id_subcategoria.id_categoria != self.id_categoria:
+        if self.id_subcategoria and self.id_subcategoria.id_categoria != self.id_categoria:
             raise ValidationError('La subcategoría no pertenece a la categoría seleccionada')
 
 
@@ -133,20 +132,23 @@ class DetalleDescuento(models.Model):
     def __str__(self):
         return f'DetalleDescuento ({self.id}): {self.id_descuento} {self.id_producto} {self.id_status}'
 
-    def formatted_date_created(self):
-        return self.date_created.strftime('%Y-%B-%d %H:%M:%S')
-
 
 class CuponDescuento(models.Model):
     id = models.AutoField(primary_key=True)
-    name_cupon = models.CharField(max_length=50)
+    code_cupon = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
     id_status = models.BooleanField(default=True)
     date_start = models.DateTimeField(default=timezone.now)
     date_end = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'CuponDescuento ({self.id}): {self.name_cupon} {self.description} {self.date_start} - {self.date_end}'
+        return f'CuponDescuento ({self.id}): {self.code_cupon} {self.description} {self.date_start} - {self.date_end} {self.id_status}'
+
+    def formatted_date_start(self):
+        return self.date_start.strftime('%Y-%B-%d')
+
+    def formatted_date_end(self):
+        return self.date_end.strftime('%Y-%B-%d')
 
 
 class FormadePago(models.Model):
@@ -165,21 +167,30 @@ class EstadodeCompra(models.Model):
     id_status = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'EstadodeCompra ({self.id}): {self.estado_compra} {self.descripcion} {self.id_status}'
+        return f'EstadodeCompra ({self.id}): {self.estado_compra}'
 
 
 class OrdendeCompra(models.Model):
     id = models.AutoField(primary_key=True)
     id_user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_domicilio = models.ForeignKey(Domicilio, on_delete=models.CASCADE)
+    id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE, default=1)
+    cantidad = models.IntegerField(default=0)
     id_forma_pago = models.ForeignKey(FormadePago, on_delete=models.CASCADE)
+    id_cupon_descuento = models.ForeignKey(CuponDescuento, on_delete=models.SET_NULL, null=True, blank=True)
+    id_descuento = models.ForeignKey(Descuento, on_delete=models.SET_NULL, null=True, blank=True)
     id_estado_compra = models.ForeignKey(EstadodeCompra, on_delete=models.CASCADE)
     id_status = models.BooleanField(default=True)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'OrdendeCompra ({self.id_user}): {self.id_forma_pago} {self.id_estado_compra} {self.id_status}'
+        return f'OrdendeCompra ({self.id}): {self.id_user} {self.id_producto} {self.cantidad}'
 
     def formatted_date_created(self):
         return self.date_created.strftime('%Y-%B-%d %H:%M:%S')
 
+    def descuento_porcentaje(self):
+        if self.id_descuento:
+            return "{}%".format(self.id_descuento.porcentaje)
+        else:
+            return "0%"
