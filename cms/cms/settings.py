@@ -15,16 +15,18 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9*39z+20o@idd0y3e9=@zq+c39ty@m&6qz$xuqpv(e9yt%=3n@'
+SECRET_KEY = 'django-insecure-h5u5(h64!7x+te4=@sguk@la+sgfqjspf9i1jglngu=!vf5_#q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 # Application definition
 
@@ -35,11 +37,92 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',  # tabla de usuarios
+    'shop',
+    'django.contrib.sites',  # para allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.twitter',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.instagram',
+    'allauth.socialaccount.providers.twitch',
 ]
+
+SITE_ID = 1
+
+#provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': 'your client id',
+            'secret': 'your secret key'
+        }
+    },
+    'facebook': {
+        'APP': {
+            'client_id': 'your client id',
+            'secret': 'your secret key'
+        }
+    },
+    'twitter': {
+        'APP': {
+            'client_id': 'your client id',
+            'secret': 'your secret key'
+        }
+    },
+    'github': {
+        'APP': {
+            'client_id': 'your client id',
+            'secret': 'your secret key'
+        }
+    },
+    'instagram': {
+        'APP': {
+            'client_id': 'your client id',
+            'secret': 'your secret key'
+        }
+    },
+    'twitch': {
+        'APP': {
+            'client_id': 'your client id',
+            'secret': 'your secret key'
+        }
+    },
+}
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+ACCOUNT_EMAIL_REQUIRED = True # para que el usuario se registre con email
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # para que el usuario verifique su email
+ACCOUNT_AUTHENTICATION_METHOD = 'email' # para que el usuario se autentique con email
+ACCOUNT_USERNAME_REQUIRED = False # para que el usuario no se registre con username
+# ACCOUNT_UNIQUE_EMAIL = True # para que el email sea unico
+# ACCOUNT_LOGOUT_ON_GET = True # para que el usuario se desloguee al hacer click en el boton de logout
+# ACCOUNT_LOGOUT_REDIRECT_URL = '/' # para que el usuario sea redirigido al hacer logout
+# ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False # para que el usuario no tenga que ingresar dos veces la contraseña
+# ACCOUNT_SESSION_REMEMBER = True # para que el usuario se mantenga logueado
+# ACCOUNT_SIGNUP_FORM_CLASS = 'users.forms.SignUpForm' # para que el usuario se registre con email y contraseña
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None # para que el usuario no se registre con username
+# ACCOUNT_USER_MODEL_EMAIL_FIELD = 'email' # para que el usuario se registre con email
+# ACCOUNT_FORMS = {'signup': 'users.forms.SignUpForm'} # para que el usuario se registre con email y contraseña
+# LOGIN_REDIRECT_URL = '/' # para que el usuario sea redirigido al hacer login
+# LOGOUT_REDIRECT_URL = '/' # para que el usuario sea redirigido al hacer logout
+# ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True # para que el usuario se desloguee al cambiar la contraseña
+#
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # para que los correos se muestren en la consola
+# DEFAULT_FROM_EMAIL = ' ' # para que el correo tenga un remitente
+# EMAIL_HOST = 'smtp.gmail.com' # para que el correo tenga un host
+# EMAIL_PORT = 587 # para que el correo tenga un puerto
+# EMAIL_USE_TLS = True # para que el correo use tls
+# EMAIL_HOST_USER = ' ' # para que el correo tenga un usuario
+# EMAIL_HOST_PASSWORD = ' ' # para que el correo tenga una contraseña
+# EMAIL_USE_SSL = False # para que el correo use ssl
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,6 +154,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cms.wsgi.application'
 
+
+# Database
+# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -94,6 +181,7 @@ DATABASES = {
     }
 }
 
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -112,6 +200,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -123,6 +212,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
@@ -132,14 +222,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-SITE_ID = 1
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_USERNAME_REQUIRED = False

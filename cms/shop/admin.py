@@ -1,11 +1,10 @@
 from django.contrib import admin
-from .models import User, Pais, Departamentos, Ciudades, Domicilio, Categoria, SubCategoria, Producto, Descuento, \
+from .models import Profile, Pais, Departamentos, Ciudades, Domicilio, Categoria, SubCategoria, Producto, Descuento, \
     DetalleDescuento, FormadePago, EstadodeCompra, OrdendeCompra, CuponDescuento
 
 admin.site.register(Pais)
 admin.site.register(Departamentos)
 admin.site.register(Ciudades)
-#admin.site.register(Domicilio)
 admin.site.register(Categoria)
 # admin.site.register(Producto)
 # admin.site.register(Descuento)
@@ -17,12 +16,12 @@ admin.site.register(EstadodeCompra)
 admin.site.register(SubCategoria)
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'name', 'last_name', 'email', 'telephone_number', 'id_status', 'date_created')
+        'id', 'user', 'telephone_number', 'id_status', 'date_created')
     list_filter = ('id_status',)
-    search_fields = ('name', 'last_name', 'email')
+    search_fields = ('user',)
 
     def formatted_date_created(self, obj):
         return obj.formatted_date_created()

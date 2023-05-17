@@ -2,24 +2,18 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 
-# Create your models here.
-class User(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.CharField(max_length=50)
-    password = models.CharField(max_length=50)
+class Profile(models.Model):
+    user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
     telephone_number = models.CharField(max_length=50, default='')
     id_status = models.BooleanField(default=True)
     date_created = models.DateTimeField(default=timezone.now)
 
+    #
     def __str__(self):
-        return f'User ({self.id}): {self.name} {self.last_name}'
-
-    def formatted_date_created(self):
-        return self.date_created.strftime('%Y-%B-%d %H:%M:%S')
+        return f'User ({self.id}): {self.user.username} {self.telephone_number}'
 
 
 class Pais(models.Model):
@@ -54,7 +48,7 @@ class Ciudades(models.Model):
 
 class Domicilio(models.Model):
     id = models.AutoField(primary_key=True)
-    id_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    id_user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     id_ciudad = models.ForeignKey(Ciudades, on_delete=models.CASCADE)
     direccion = models.CharField(max_length=100)
     barrio = models.CharField(max_length=50)
@@ -90,7 +84,7 @@ class SubCategoria(models.Model):
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-    id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.SET_NULL, blank=True, null=True) #validators=[MinValueValidator(1)],
+    id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.SET_NULL, blank=True, null=True)  # validators=[MinValueValidator(1)],
     nombreProducto = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=200)
     precio = models.IntegerField(default=0)
@@ -172,7 +166,7 @@ class EstadodeCompra(models.Model):
 
 class OrdendeCompra(models.Model):
     id = models.AutoField(primary_key=True)
-    id_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    id_user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     id_domicilio = models.ForeignKey(Domicilio, on_delete=models.CASCADE)
     id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE, default=1)
     cantidad = models.IntegerField(default=0)
