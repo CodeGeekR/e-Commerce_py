@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Tuser List</h1>
+
+<ul>
+{% for objeto in object_list %}
+<li>{{ objeto }}</li>
+{% empty %}
+<li>No hay objetos</li>
+{% endfor %}
+</ul>
+
+{% endblock %}
+
+<h2>Prueba 2</h2>
