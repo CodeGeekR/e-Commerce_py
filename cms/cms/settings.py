@@ -48,49 +48,13 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.instagram',
     'allauth.socialaccount.providers.twitch',
+    'rest_framework',
 ]
 
 SITE_ID = 1
 
 #provider specific settings
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': 'your client id',
-            'secret': 'your secret key'
-        }
-    },
-    'facebook': {
-        'APP': {
-            'client_id': 'your client id',
-            'secret': 'your secret key'
-        }
-    },
-    'twitter': {
-        'APP': {
-            'client_id': 'your client id',
-            'secret': 'your secret key'
-        }
-    },
-    'github': {
-        'APP': {
-            'client_id': 'your client id',
-            'secret': 'your secret key'
-        }
-    },
-    'instagram': {
-        'APP': {
-            'client_id': 'your client id',
-            'secret': 'your secret key'
-        }
-    },
-    'twitch': {
-        'APP': {
-            'client_id': 'your client id',
-            'secret': 'your secret key'
-        }
-    },
-}
+#SOCIALACCOUNT_PROVIDERS =
 
 
 AUTHENTICATION_BACKENDS = [
@@ -218,6 +182,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join('static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

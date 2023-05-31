@@ -1,0 +1,25 @@
+/* Estilos personalizados para el panel de administración */
+
+body {
+  padding-top: 30px;
+}
+
+.navbar-dark {
+  background-color: #343a40;
+}
+
+.navbar-dark .navbar-brand {
+  color: #ccefea;
+}
+
+.nav-link {
+  color: #212121;
+}
+
+.container {
+  max-width: 960px;
+}
+
+.bg-dark {
+  background-color: #00796B !important;
+}

@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+
 from .models import Profile, Pais, Departamentos, Ciudades, Domicilio, Categoria, SubCategoria, Producto, Descuento, \
     DetalleDescuento, FormadePago, EstadodeCompra, OrdendeCompra, CuponDescuento
 
@@ -129,8 +131,6 @@ class OrdendeCompraAdmin(admin.ModelAdmin):
         return "{}".format(obj.id_estado_compra.estado_compra)
 
     estado_compra.short_description = 'Estado de Compra'
-
-
 
 
 @admin.register(Producto)

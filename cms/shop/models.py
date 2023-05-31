@@ -81,12 +81,19 @@ class SubCategoria(models.Model):
         return f'SubCategoria ({self.id}): {self.nombreSubCategoria} {self.id_status}'
 
 
+def validate_image_resolution(image):
+    width, height = image.width, image.height
+    if width > 800 or height > 800:
+        raise ValidationError("La imagen debe tener una resolución máxima de 800x800 píxeles.")
+
+
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
     id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.SET_NULL, blank=True, null=True)  # validators=[MinValueValidator(1)],
     nombreProducto = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=200)
+    imagen = models.ImageField(upload_to='images/', null=True, blank=True, validators=[validate_image_resolution])
     precio = models.IntegerField(default=0)
     cantidad = models.IntegerField(default=0)
     id_status = models.BooleanField(default=True)
