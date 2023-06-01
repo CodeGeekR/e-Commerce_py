@@ -24,10 +24,10 @@ class UserListView(ListView):
 @permission_classes((AllowAny,))
 class productoListApi(ListAPIView):
     serializer_class = ProductoSerializer
-    queryset = Producto.objects.filter(precio__lte=5000000, precio__gte=1000000)
+    queryset = Producto.objects.filter(precio__lte=5000000, precio__gte=500000).order_by('precio')
 
 
 @permission_classes((AllowAny,))
 class categoriaListApi(ListAPIView):
     serializer_class = CategoriaSerializer
-    queryset = Categoria.objects.all().order_by('nombreCategoria')
+    queryset = Categoria.objects.all().order_by('id')

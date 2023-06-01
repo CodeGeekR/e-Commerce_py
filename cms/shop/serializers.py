@@ -16,6 +16,7 @@ class CategoriaSerializer(ModelSerializer):
 
 class ProductoSerializer(ModelSerializer):
     id_categoria = CategoriaSerializer(many=False)
+
     class Meta:
         model = Producto
         fields = '__all__'
