@@ -83,7 +83,7 @@ class SubCategoria(models.Model):
 
 def validate_image_resolution(image):
     width, height = image.width, image.height
-    if width > 800 or height > 800:
+    if width > 1001 or height > 1001:
         raise ValidationError("La imagen debe tener una resolución máxima de 800x800 píxeles.")
 
 

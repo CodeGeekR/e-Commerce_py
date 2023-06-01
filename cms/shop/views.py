@@ -4,12 +4,12 @@ from django.contrib.auth.models import User
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 
-from .models import Producto, Categoria
+from .models import Producto, Categoria, OrdendeCompra
 from django.contrib.auth.models import Group, User
 
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView, ListAPIView, \
     RetrieveUpdateDestroyAPIView, DestroyAPIView
-from .serializers import ProductoSerializer, CategoriaSerializer
+from .serializers import ProductoSerializer, CategoriaSerializer, OrdendeCompraSerializer
 
 
 class UserListView(ListView):
@@ -24,10 +24,22 @@ class UserListView(ListView):
 @permission_classes((AllowAny,))
 class productoListApi(ListAPIView):
     serializer_class = ProductoSerializer
-    queryset = Producto.objects.filter(precio__lte=5000000, precio__gte=500000).order_by('precio')
+    queryset = Producto.objects.filter(id_categoria=2).order_by('id')
 
 
 @permission_classes((AllowAny,))
 class categoriaListApi(ListAPIView):
     serializer_class = CategoriaSerializer
     queryset = Categoria.objects.all().order_by('id')
+
+
+@permission_classes((AllowAny,))
+class OrdendeCompraSerializer(CreateAPIView):
+    queryset = OrdendeCompra.objects.all()
+    serializer_class = OrdendeCompraSerializer
+
+
+@permission_classes((AllowAny,))
+class ProductoSerializer(CreateAPIView):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
