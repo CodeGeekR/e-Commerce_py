@@ -24,7 +24,8 @@ class UserListView(ListView):
 @permission_classes((AllowAny,))
 class productoListApi(ListAPIView):
     serializer_class = ProductoSerializer
-    queryset = Producto.objects.filter(id_categoria=2).order_by('id')
+    queryset = Producto.objects.all().order_by('id')
+#    queryset = Producto.objects.filter(id_categoria=1).order_by('id')
 
 
 @permission_classes((AllowAny,))

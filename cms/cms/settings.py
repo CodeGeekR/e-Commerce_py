@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'django-insecure-h5u5(h64!7x+te4=@sguk@la+sgfqjspf9i1jglngu=!vf5_#q
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -50,22 +48,34 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitch',
     'rest_framework',
     'corsheaders',
-]
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'rest_framework.authtoken',
+    ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+REST_AUTH_REGISTER_VERIFICATION_ENABLED = False
 
 SITE_ID = 1
 
-#provider specific settings
-#SOCIALACCOUNT_PROVIDERS =
+# provider specific settings
+# SOCIALACCOUNT_PROVIDERS =
 
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-ACCOUNT_EMAIL_REQUIRED = True # para que el usuario se registre con email
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # para que el usuario verifique su email
-ACCOUNT_AUTHENTICATION_METHOD = 'email' # para que el usuario se autentique con email
-ACCOUNT_USERNAME_REQUIRED = False # para que el usuario no se registre con username
+#ACCOUNT_EMAIL_REQUIRED = True  # para que el usuario se registre con email
+#ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # para que el usuario verifique su email
+#ACCOUNT_AUTHENTICATION_METHOD = 'email'  # para que el usuario se autentique con email
+#ACCOUNT_USERNAME_REQUIRED = False  # para que el usuario no se registre con username
 # ACCOUNT_UNIQUE_EMAIL = True # para que el email sea unico
 # ACCOUNT_LOGOUT_ON_GET = True # para que el usuario se desloguee al hacer click en el boton de logout
 # ACCOUNT_LOGOUT_REDIRECT_URL = '/' # para que el usuario sea redirigido al hacer logout
@@ -97,10 +107,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware', # para que el backend acepte peticiones de cualquier origen
+    'corsheaders.middleware.CorsMiddleware',  # para que el backend acepte peticiones de cualquier origen
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True # para que el backend acepte peticiones de cualquier origen
+CORS_ORIGIN_ALLOW_ALL = True  # para que el backend acepte peticiones de cualquier origen
 
 ROOT_URLCONF = 'cms.urls'
 
@@ -122,7 +132,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'cms.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -150,7 +159,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -169,7 +177,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -180,7 +187,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

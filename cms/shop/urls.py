@@ -17,5 +17,4 @@ urlpatterns = [
     re_path(r"^getcategories", categoriaListApi.as_view(), name="getcategories"),
     re_path(r"^ordendecompra", OrdendeCompraSerializer.as_view(), name="ordendecompra"),
     re_path(r"^createproducto", ProductoSerializer.as_view(), name="createproducto"),
-
 ]

@@ -19,11 +19,14 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 from django.conf.urls.static import static
-
+from dj_rest_auth.registration.views import RegisterView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path("shop/", include("shop.urls")),
-    path("", include("shop.urls", namespace="shop")),
+    #path("", include("shop.urls", namespace="shop")),
+#    path('api/auth/', include('rest_auth.urls')),
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('auth/registration/', RegisterView.as_view(), name='rest_register'),
     ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

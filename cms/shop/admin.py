@@ -8,7 +8,7 @@ admin.site.register(Pais)
 admin.site.register(Departamentos)
 admin.site.register(Ciudades)
 admin.site.register(Categoria)
-# admin.site.register(Producto)
+admin.site.register(Producto)
 # admin.site.register(Descuento)
 # admin.site.register(DetalleDescuento)
 # admin.site.register(CuponDescuento)
@@ -133,23 +133,23 @@ class OrdendeCompraAdmin(admin.ModelAdmin):
     estado_compra.short_description = 'Estado de Compra'
 
 
-@admin.register(Producto)
-class ProductoAdmin(admin.ModelAdmin):
-    list_display = (
-        'id', 'nombreProducto', 'categoria', 'precio', 'id_status', 'date_created')
-    list_filter = ('id_status',)
-    search_fields = ('nombreProducto', 'id_categoria', 'id_subcategoria')
+#@admin.register(Producto)
+#class ProductoAdmin(admin.ModelAdmin):
+#    list_display = (
+#        'id', 'nombreProducto', 'categoria', 'precio', 'id_status', 'date_created')
+ #   list_filter = ('id_status',)
+ #   search_fields = ('nombreProducto', 'id_categoria', 'id_subcategoria')
 
-    def formatted_date_created(self, obj):
-        return obj.formatted_date_created()
+ #   def formatted_date_created(self, obj):
+ #       return obj.formatted_date_created()
 
-    formatted_date_created.short_description = 'Date Created'
-    formatted_date_created.admin_order_field = 'date_created'
+ #   formatted_date_created.short_description = 'Date Created'
+#    formatted_date_created.admin_order_field = 'date_created'
 
-    def categoria(self, obj):
-        return "{}".format(obj.id_categoria.nombreCategoria)
+#    def categoria(self, obj):
+#       return "{}".format(obj.id_categoria.nombreCategoria)
 
-    categoria.short_description = 'Categoria'
+ #   categoria.short_description = 'Categoria'
 
 
 @admin.register(Domicilio)

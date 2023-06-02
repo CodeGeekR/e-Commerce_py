@@ -83,13 +83,14 @@ class SubCategoria(models.Model):
 
 def validate_image_resolution(image):
     width, height = image.width, image.height
-    if width > 1001 or height > 1001:
-        raise ValidationError("La imagen debe tener una resolución máxima de 800x800 píxeles.")
+    if width > 1081 or height > 1081:
+        raise ValidationError("La imagen debe tener una resolución máxima de 1080x1080 píxeles.")
 
 
+# (Categoria, on_delete=models.CASCADE)
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
-    id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    id_categoria = models.ManyToManyField(Categoria)
     id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.SET_NULL, blank=True, null=True)  # validators=[MinValueValidator(1)],
     nombreProducto = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=200)
@@ -105,10 +106,11 @@ class Producto(models.Model):
     def formatted_date_created(self):
         return self.date_created.strftime('%Y-%B-%d %H:%M:%S')
 
-    def clean(self):
-        super().clean()
-        if self.id_subcategoria and self.id_subcategoria.id_categoria != self.id_categoria:
-            raise ValidationError('La subcategoría no pertenece a la categoría seleccionada')
+
+#   def clean(self):
+#       super().clean()
+#       if self.id_subcategoria and self.id_subcategoria.id_categoria != self.id_categoria:
+#           raise ValidationError('La subcategoría no pertenece a la categoría seleccionada')
 
 
 class Descuento(models.Model):
