@@ -32,13 +32,13 @@ class OrdendeCompraSerializer(ModelSerializer):
 class CustomRegisterSerializer(RegisterSerializer):
     def create(self, request):
         user = super().create(request)
-        group, created = Group.objects.get_or_create(name='MECHUDOS')
+        group, created = Group.objects.get_or_create(name='Clientes')
         user.groups.add(group)
         user.save()
         return user
 
     def custom_signup(self, request, user):
-        group, created = Group.objects.get_or_create(name='MECHUDOS')
+        group, created = Group.objects.get_or_create(name='Clientes')
         user.groups.add(group)
         print(">usuario creado exitosamente")
         user.save()
