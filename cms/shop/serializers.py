@@ -28,17 +28,17 @@ class OrdendeCompraSerializer(ModelSerializer):
         fields = ['id_user', 'id_producto', 'cantidad', 'id_forma_pago', 'id_estado_compra']
 
 
+# CODIGO PARA ASIGNAR UN GRUPO DE USUARIOS AUTOMATICAMENTE AL CREAR UN USUARIO USANDO DJ_REST_AUTH
 class CustomRegisterSerializer(RegisterSerializer):
     def create(self, request):
         user = super().create(request)
-        group = Group.objects.get(name='Clientes')
+        group, created = Group.objects.get_or_create(name='MECHUDOS')
         user.groups.add(group)
         user.save()
-        print("*******")
         return user
 
     def custom_signup(self, request, user):
-        print('***************AQUI')
-
-
-
+        group, created = Group.objects.get_or_create(name='MECHUDOS')
+        user.groups.add(group)
+        print(">usuario creado exitosamente")
+        user.save()

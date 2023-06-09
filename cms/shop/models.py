@@ -66,18 +66,18 @@ class Profile(models.Model):
         else:
             return Ciudades.objects.none()
 
-
-def create_profile(sender, instance, created,  **kwargs):
-    if created:
-        Profile.objects.get_or_create(user=instance)
-
-
-def save_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
-
-post_save.connect(create_profile, sender=User)
-post_save.connect(save_profile, sender=User)
+# ESTE CODIGO ES PARA CREAR UN PERFIL DE USUARIO AUTOMATICAMENTE AL CREAR UN USUARIO USANDO SIGNALS.PY
+# def create_profile(sender, instance, created,  **kwargs):
+#    if created:
+#        Profile.objects.get_or_create(user=instance)
+#
+#
+# def save_profile(sender, instance, **kwargs):
+#    instance.profile.save()
+#
+#
+# post_save.connect(create_profile, sender=User)
+# post_save.connect(save_profile, sender=User)
 
 
 class Categoria(models.Model):
@@ -108,7 +108,7 @@ def validate_image_resolution(image):
 # (Categoria, on_delete=models.CASCADE)
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
-    id_categoria = models.ManyToManyField(Categoria)
+    id_categoria = models.ManyToManyField(Categoria)  # related_name='categoria', blank=True, null=True
     id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.SET_NULL, blank=True, null=True)
     nombreProducto = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=200)

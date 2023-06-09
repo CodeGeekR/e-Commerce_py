@@ -15,8 +15,10 @@ admin.site.register(FormadePago)
 admin.site.register(EstadodeCompra)
 # admin.site.register(OrdendeCompra)
 admin.site.register(SubCategoria)
+# admin.site.register(Profile)
 
 
+@admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = (
         'user', 'address', 'city', 'telephone_number', 'id_status', 'user_group')
@@ -27,9 +29,6 @@ class ProfileAdmin(admin.ModelAdmin):
         return " - ".join([t.name for t in obj.user.groups.all().order_by("name")])
 
     user_group.short_description = 'Groups'
-
-
-admin.site.register(Profile, ProfileAdmin)
 
 
 @admin.register(CuponDescuento)

@@ -10,6 +10,8 @@ from django.contrib.auth.models import Group, User
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView, ListAPIView, \
     RetrieveUpdateDestroyAPIView, DestroyAPIView
 from .serializers import ProductoSerializer, CategoriaSerializer, OrdendeCompraSerializer
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
 class UserListView(ListView):
@@ -35,12 +37,20 @@ class categoriaListApi(ListAPIView):
 
 
 @permission_classes((AllowAny,))
-class OrdendeCompraSerializer(CreateAPIView):
+class OrdendeCompraSerializer(PermissionRequiredMixin, CreateAPIView):
     queryset = OrdendeCompra.objects.all()
     serializer_class = OrdendeCompraSerializer
+    permission_required = 'shop.add_ordendecompra'
 
 
 @permission_classes((AllowAny,))
-class ProductoSerializer(CreateAPIView):
+class categoriaListApi(ListAPIView):
+    serializer_class = CategoriaSerializer
+    queryset = Categoria.objects.all().order_by('id')
+
+
+@permission_classes((AllowAny,))
+class ProductoSerializer(PermissionRequiredMixin, CreateAPIView):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
+    permission_required = 'shop.add_producto'
