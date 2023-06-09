@@ -1,14 +1,13 @@
 from django.contrib import admin
 
-
-from .models import Profile, Pais, Departamentos, Ciudades, Domicilio, Categoria, SubCategoria, Producto, Descuento, \
+from .models import Profile, Pais, Departamentos, Ciudades, Categoria, SubCategoria, Producto, Descuento, \
     DetalleDescuento, FormadePago, EstadodeCompra, OrdendeCompra, CuponDescuento
 
 admin.site.register(Pais)
 admin.site.register(Departamentos)
 admin.site.register(Ciudades)
 admin.site.register(Categoria)
-admin.site.register(Producto)
+# admin.site.register(Producto)
 # admin.site.register(Descuento)
 # admin.site.register(DetalleDescuento)
 # admin.site.register(CuponDescuento)
@@ -18,18 +17,19 @@ admin.site.register(EstadodeCompra)
 admin.site.register(SubCategoria)
 
 
-@admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'user', 'telephone_number', 'id_status', 'date_created')
-    list_filter = ('id_status',)
-    search_fields = ('user',)
+        'user', 'address', 'city', 'telephone_number', 'id_status', 'user_group')
+    search_fields = ('city', 'user__username', 'user__groups__name')
+    list_filter = ('city', 'user__groups',)
 
-    def formatted_date_created(self, obj):
-        return obj.formatted_date_created()
+    def user_group(self, obj):
+        return " - ".join([t.name for t in obj.user.groups.all().order_by("name")])
 
-    formatted_date_created.short_description = 'Date Created'
-    formatted_date_created.admin_order_field = 'date_created'
+    user_group.short_description = 'Groups'
+
+
+admin.site.register(Profile, ProfileAdmin)
 
 
 @admin.register(CuponDescuento)
@@ -133,31 +133,20 @@ class OrdendeCompraAdmin(admin.ModelAdmin):
     estado_compra.short_description = 'Estado de Compra'
 
 
-#@admin.register(Producto)
-#class ProductoAdmin(admin.ModelAdmin):
-#    list_display = (
-#        'id', 'nombreProducto', 'categoria', 'precio', 'id_status', 'date_created')
- #   list_filter = ('id_status',)
- #   search_fields = ('nombreProducto', 'id_categoria', 'id_subcategoria')
-
- #   def formatted_date_created(self, obj):
- #       return obj.formatted_date_created()
-
- #   formatted_date_created.short_description = 'Date Created'
-#    formatted_date_created.admin_order_field = 'date_created'
-
-#    def categoria(self, obj):
-#       return "{}".format(obj.id_categoria.nombreCategoria)
-
- #   categoria.short_description = 'Categoria'
+def categoria(obj):
+    return "{}".format(obj.id_categoria.nombreCategoria)
 
 
-@admin.register(Domicilio)
-class DomicilioAdmin(admin.ModelAdmin):
+def categoria(obj):
+    return "{}".format(obj.id_subcategoria.id_categoria.nombreCategoria)
+
+
+@admin.register(Producto)
+class ProductoAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'id_user', 'ciudad', 'direccion', 'id_status', 'date_created')
+        'id', 'nombreProducto', 'precio', 'cantidad', 'id_status', 'date_created')
     list_filter = ('id_status',)
-    search_fields = ('id_user', 'id_ciudad', 'direccion')
+    search_fields = ('nombreProducto', 'id_subcategoria')
 
     def formatted_date_created(self, obj):
         return obj.formatted_date_created()
@@ -165,9 +154,20 @@ class DomicilioAdmin(admin.ModelAdmin):
     formatted_date_created.short_description = 'Date Created'
     formatted_date_created.admin_order_field = 'date_created'
 
-    def ciudad(self, obj):
-        return "{}".format(obj.id_ciudad.nombreCiudad)
-
-    ciudad.short_description = 'ciudad'
-
-
+# @admin.register(Domicilio)
+# class DomicilioAdmin(admin.ModelAdmin):
+#    list_display = (
+#        'id', 'id_user', 'ciudad', 'direccion', 'id_status', 'date_created')
+#    list_filter = ('id_status',)
+#    search_fields = ('id_user', 'id_ciudad', 'direccion')
+#
+#    def formatted_date_created(self, obj):
+#        return obj.formatted_date_created()
+#
+#    formatted_date_created.short_description = 'Date Created'
+#    formatted_date_created.admin_order_field = 'date_created'
+#
+#    def ciudad(self, obj):
+#        return "{}".format(obj.id_ciudad.nombreCiudad)
+#
+#    ciudad.short_description = 'ciudad'

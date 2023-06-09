@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'shop',
+    'shop.apps.ShopConfig',
     'django.contrib.sites',  # para allauth
     'allauth',
     'allauth.account',
@@ -107,6 +107,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # para que el backend acepte peticiones de cualquier origen
 ]
+
+# configurar CSRF_FAILURE_VIEW para que pueda ejecutarse en Azure
+# CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
+CSRF_TRUSTED_ORIGINS = ['https://shopcms.azurewebsites.net',
+                        'https://shopcms.azurewebsites.net/',
+                        'https://shopcms.azurewebsites.net/admin/',
+                        'https://shopcms.azurewebsites.net/admin/login/',
+                        'https://shopcms.azurewebsites.net/admin/login/?next=/admin/',
+                        ]
+CSRF_USE_SESSIONS = False
 
 CORS_ORIGIN_ALLOW_ALL = False  # para que el backend acepte peticiones de cualquier origen
 # configuracion de corsheaders para que solo se permita el acceso a la api desde el frontend

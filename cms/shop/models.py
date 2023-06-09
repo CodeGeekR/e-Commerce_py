@@ -1,19 +1,8 @@
-from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
-    telephone_number = models.CharField(max_length=50, default='')
-    id_status = models.BooleanField(default=True)
-    date_created = models.DateTimeField(default=timezone.now)
-
-    #
-    def __str__(self):
-        return f'User ({self.id}): {self.user.username} {self.telephone_number}'
+from django.db.models.signals import post_save
 
 
 class Pais(models.Model):
@@ -46,20 +35,49 @@ class Ciudades(models.Model):
         return f'Ciudades ({self.id}): {self.nombreCiudad} {self.id_status}'
 
 
-class Domicilio(models.Model):
-    id = models.AutoField(primary_key=True)
-    id_user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    id_ciudad = models.ForeignKey(Ciudades, on_delete=models.CASCADE)
-    direccion = models.CharField(max_length=100)
-    barrio = models.CharField(max_length=50)
+def validate_imagenProfile_resolution(image_profile):
+    width, height = image_profile.width, image_profile.height
+    if width > 600 or height > 600:
+        raise ValidationError("La imagen debe tener una resolución máxima de 600x600 píxeles.")
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
+    imagenProfile = models.ImageField(upload_to='profile/', null=True, blank=True, validators=[validate_imagenProfile_resolution])
+    telephone_number = models.CharField(max_length=50, default='')
+    address = models.CharField(max_length=100, default='')
+    department = models.ForeignKey(Departamentos, on_delete=models.SET_NULL, blank=True, null=True)
+    city = models.ForeignKey(Ciudades, on_delete=models.SET_NULL, blank=True, null=True)
     id_status = models.BooleanField(default=True)
     date_created = models.DateTimeField(default=timezone.now)
 
-    def __str__(self):
-        return f'Domicilio ({self.id_user}): {self.direccion} {self.barrio} {self.id_status}'
+    class Meta:
+        verbose_name = 'Perfil'
+        verbose_name_plural = 'Perfiles'
+        ordering = ['-date_created']
 
-    def formatted_date_created(self):
-        return self.date_created.strftime('%Y-%B-%d %H:%M:%S')
+    #
+    def __str__(self):
+        return f'User ({self.user}):  {self.telephone_number}'
+
+    def get_available_cities(self):
+        if self.department:
+            return Ciudades.objects.filter(id_departamento=self.department)
+        else:
+            return Ciudades.objects.none()
+
+
+def create_profile(sender, instance, created,  **kwargs):
+    if created:
+        Profile.objects.get_or_create(user=instance)
+
+
+def save_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+
+post_save.connect(create_profile, sender=User)
+post_save.connect(save_profile, sender=User)
 
 
 class Categoria(models.Model):
@@ -91,7 +109,7 @@ def validate_image_resolution(image):
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     id_categoria = models.ManyToManyField(Categoria)
-    id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.SET_NULL, blank=True, null=True)  # validators=[MinValueValidator(1)],
+    id_subcategoria = models.ForeignKey(SubCategoria, on_delete=models.SET_NULL, blank=True, null=True)
     nombreProducto = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=200)
     imagen = models.ImageField(upload_to='images/', null=True, blank=True, validators=[validate_image_resolution])
@@ -106,11 +124,8 @@ class Producto(models.Model):
     def formatted_date_created(self):
         return self.date_created.strftime('%Y-%B-%d %H:%M:%S')
 
-
-#   def clean(self):
-#       super().clean()
-#       if self.id_subcategoria and self.id_subcategoria.id_categoria != self.id_categoria:
-#           raise ValidationError('La subcategoría no pertenece a la categoría seleccionada')
+    def formatted_price(self):
+        return f'$ {self.precio} COP'
 
 
 class Descuento(models.Model):
@@ -176,7 +191,6 @@ class EstadodeCompra(models.Model):
 class OrdendeCompra(models.Model):
     id = models.AutoField(primary_key=True)
     id_user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    id_domicilio = models.ForeignKey(Domicilio, on_delete=models.CASCADE)
     id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE, default=1)
     cantidad = models.IntegerField(default=0)
     id_forma_pago = models.ForeignKey(FormadePago, on_delete=models.CASCADE)
